@@ -7,6 +7,7 @@ from . import models
 from .submoduls import dynamic_ml_classifier, process_comments, word_vectors
 import pandas as pd
 import os
+import tensorflow as tf
 # Create your views here.
 
 # loading_classifier
@@ -15,6 +16,7 @@ CLF_TYPE = settings.ML_CLASSIFIER
 CLASSIFIER = dynamic_ml_classifier.get_classifier( settings.ML_CLASSIFIER, **settings.CLF_DICT[settings.ML_CLASSIFIER] )
 
 CLASSIFIER_NN = dynamic_ml_classifier.get_classifier( "neural_network", **settings.CLF_DICT[ "neural_network"] )
+CLASSIFIER_NN_GRAPH = tf.get_default_graph()
 
 WORD2VEC_MODEL = word_vectors.load_word2vec_model( settings.WORD2VEC_PATH, is_binary=True )
 
@@ -58,7 +60,7 @@ def send_comment_label( request, format='json' ):
     return Response( {'Message':'Thank you for sending a labeled comment!'} )
 
 @api_view(('GET',))
-def get_unlabeled_comment_old( request, format='json' ):
+def get_unlabeled_comment_very_old( request, format='json' ):
     global COMMENTS_ITERATOR
     global CLASSIFIER
     global SENTIMENT_DICT
@@ -76,7 +78,7 @@ def get_unlabeled_comment_old( request, format='json' ):
                        'Predicted':predicted_text } )
 
 @api_view(('GET',))
-def get_unlabeled_comment( request, format='json' ):
+def get_unlabeled_comment_old( request, format='json' ):
     global COMMENTS_ITERATOR
     global CLASSIFIER
     global SENTIMENT_DICT
@@ -86,6 +88,29 @@ def get_unlabeled_comment( request, format='json' ):
     # 0: negative 1:neutral 2:positive
     predicted = CLASSIFIER.predict( [comment] )
     predicted_text = SENTIMENT_DICT[predicted[0]]
+    print( predicted_text )
+    return Response( {  'Id':id,
+                        'Message':comment,
+                        'Predicted':predicted_text } )
+
+@api_view(('GET',))
+def get_unlabeled_comment( request, format='json' ):
+    global COMMENTS_ITERATOR
+    global CLASSIFIER
+    global SENTIMENT_DICT
+    global WORD2VEC_MODEL
+    global CLASSIFIER_NN_GRAPH
+    id = COMMENTS_DATAFRAME_TEXT_ID[ COMMENTS_ITERATOR ]
+    comment = COMMENTS_DATAFRAME_TEXT_RAW[ COMMENTS_ITERATOR ]
+    COMMENTS_ITERATOR += 1
+    # 0: negative 1:neutral 2:positive
+    comment_vector = word_vectors.comment_to_word2vec( comment, WORD2VEC_MODEL )
+
+    with CLASSIFIER_NN_GRAPH.as_default():
+        predicted = CLASSIFIER_NN.predict( [comment_vector] )
+
+    #predicted_text = SENTIMENT_DICT[predicted[0]]
+    predicted_text = str( predicted )
     print( predicted_text )
     return Response( {  'Id':id,
                         'Message':comment,

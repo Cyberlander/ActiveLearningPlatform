@@ -8,14 +8,14 @@ def comment_to_word2vec( comment, word2vec_model ):
     seq_len = 65
     vec_dim = 300
     sentence_as_wordlist = text_to_word_sequence( comment )
-    data_matrix = np.zeros( ( seq_len, vec_dim  ) )
+    data_matrix = np.zeros( ( 1,seq_len, vec_dim  ) )
     sentence_as_wordlist = sentence_as_wordlist[:seq_len]
     for i, word in enumerate( sentence_as_wordlist ):
         if word in word2vec_model.wv.vocab:
             word_vector = word2vec_model.wv[word]
         else:
             word_vector = np.ones( vec_dim )
-        data_matrix[i] = word_vector
+        data_matrix[0][i] = word_vector
     return data_matrix
 
 def load_word2vec_model( path, is_binary=False ):
