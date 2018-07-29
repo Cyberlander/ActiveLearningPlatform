@@ -4,15 +4,20 @@ from rest_framework.decorators import api_view
 from django.http import HttpResponse
 from . import settings
 from . import models
-from .submoduls import dynamic_ml_classifier
-from .submoduls import process_comments
+from .submoduls import dynamic_ml_classifier, process_comments, word_vectors
 import pandas as pd
+import os
 # Create your views here.
 
 # loading_classifier
 
-CLASSIFIER = dynamic_ml_classifier.get_classifier( settings.ML_CLASSIFIER, **settings.CLF_DICT[settings.ML_CLASSIFIER] )
 CLF_TYPE = settings.ML_CLASSIFIER
+CLASSIFIER = dynamic_ml_classifier.get_classifier( settings.ML_CLASSIFIER, **settings.CLF_DICT[settings.ML_CLASSIFIER] )
+
+CLASSIFIER_NN = dynamic_ml_classifier.get_classifier( "neural_network", **settings.CLF_DICT[ "neural_network"] )
+
+WORD2VEC_MODEL = word_vectors.load_word2vec_model( settings.WORD2VEC_PATH, is_binary=True )
+
 
 COMMENTS_DATAFRAME = pd.read_csv( settings.COMMENTS_CSV_PATH )
 #USER_LABELED_COMMENTS_DATAFRAME = pd.read_csv( settings.USER_LABELED_CSV_PATH )
