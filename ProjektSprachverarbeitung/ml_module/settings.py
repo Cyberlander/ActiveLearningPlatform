@@ -4,6 +4,7 @@ WORD_VECTORS = True
 
 RESOURCES_BASE_PATH = "C:/Users/Felix/Documents/Coding-Projekte/Sprachverarbeitung/ProjektSprachverarbeitung/resources"
 
+UNLABELED_COMMENTS_CSV_PATH = os.path.join( RESOURCES_BASE_PATH, 'unlabeled_comments_raw.csv' )
 COMMENTS_CSV_PATH = os.path.join( RESOURCES_BASE_PATH, 'million_post_corpus_sentiment_analysis.csv' )
 USER_LABELED_CSV_PATH = os.path.join( RESOURCES_BASE_PATH, 'user_labeled_comments.csv' )
 

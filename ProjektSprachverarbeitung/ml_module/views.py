@@ -4,10 +4,11 @@ from rest_framework.decorators import api_view
 from django.http import HttpResponse
 from . import settings
 from . import models
-from .submoduls import dynamic_ml_classifier, process_comments, word_vectors
+from .submoduls import dynamic_ml_classifier, process_comments, word_vectors, staging_process
 import pandas as pd
 import os
 import tensorflow as tf
+from . import models
 # Create your views here.
 
 # loading_classifier
@@ -20,6 +21,8 @@ CLASSIFIER_NN_GRAPH = tf.get_default_graph()
 
 WORD2VEC_MODEL = word_vectors.load_word2vec_model( settings.WORD2VEC_PATH, is_binary=True )
 
+print( "Read lage unlabeled comment dataframe..." )
+UNLABELED_COMMENTS_DATAFRAME = pd.read_csv( settings.UNLABELED_COMMENTS_CSV_PATH )
 
 COMMENTS_DATAFRAME = pd.read_csv( settings.COMMENTS_CSV_PATH )
 #USER_LABELED_COMMENTS_DATAFRAME = pd.read_csv( settings.USER_LABELED_CSV_PATH )
@@ -31,6 +34,7 @@ COMMENTS_DATAFRAME_TEXT_NORMALIZED = COMMENTS_DATAFRAME['text_normalized'].tolis
 COMMENTS_DATAFRAME_TEXT_SENTIMENT = COMMENTS_DATAFRAME['sentiment'].tolist()
 COMMENTS_DATAFRAME_TEXT_SENTIMENT_NUMERICAL = COMMENTS_DATAFRAME['sentiment_numerical'].tolist()
 COMMENTS_ITERATOR = 0
+print( COMMENTS_DATAFRAME.columns.values )
 
 SENTIMENT_DICT = {
     0:"negative",
@@ -45,18 +49,19 @@ def send_comment_label( request, format='json' ):
     id = request_data['id']
     comment = request_data['comment']
     label_user = request_data['label_user']
-    label_machine = request_data['label_machine']
-    row = "\n{}, {}, {}".format( comment, label_user, label_machine )
-    with open( settings.USER_LABELED_CSV_PATH,"a") as target_csv_file:
-        target_csv_file.write( row )
+    #row = "\n{}, {}, {}".format( comment, label_user )
+    #with open( settings.USER_LABELED_CSV_PATH,"a") as target_csv_file:
+        #target_csv_file.write( row )
 
     database_entry = models.UserLabeledComment( comment_id = id,
                                                 comment = comment,
-                                                label_user = label_user,
-                                                label_machine = label_machine )
+                                                label_user = label_user )
     database_entry.save()
 
-    process_comments.process_labeled_comment( comment, label_user, label_machine )
+    # delete entry from unlabeled comments table
+    models.UserLabeledComment
+
+    #process_comments.process_labeled_comment( comment, label_user, label_machine )
     return Response( {'Message':'Thank you for sending a labeled comment!'} )
 
 @api_view(('GET',))
@@ -123,7 +128,32 @@ def hello_world(request):
 def add_comment_to_db(request, format='json'):
     return Response( {'Message':'Comment added to database!'} )
 
-"""
-def send_comment_label( request ):
-    text = '<p>Comment sended!</p>'
-    return HttpResponse( text )"""
+@api_view(('POST',))
+def dataframe_unlabeled_comments_to_database(request, format='json'):
+    global UNLABELED_COMMENTS_DATAFRAME
+    id = UNLABELED_COMMENTS_DATAFRAME['id'].tolist()
+    headline = UNLABELED_COMMENTS_DATAFRAME['headline'].tolist()
+    text_raw = UNLABELED_COMMENTS_DATAFRAME['text_raw'].tolist()
+    text_normalized = UNLABELED_COMMENTS_DATAFRAME['text_normalized'].tolist()
+    print( "Insert dataframe entries into database" )
+
+    rows_2_insert = len(id)
+    rows_2_insert = 100000
+    # just the first 100 000 for the beginning
+
+    for i in range(rows_2_insert):
+        new_entry = models.UnlabeledComment.objects.create( comment_id=id[i],
+                                                    title=headline[i],
+                                                    text_raw=text_raw[i] )
+        print( "Row {} inserted".format( i ) )
+    return Response( {'Message':'Dataframe added to database!'} )
+
+@api_view(('POST',))
+def trigger_staging_event(request, format='json'):
+    global CLASSIFIER_NN
+    global CLASSIFIER_NN_GRAPH
+    if staging_process.is_staging_area_empty():
+        staging_process.start( CLASSIFIER_NN, CLASSIFIER_NN_GRAPH )
+        return Response( { 'Message':'Staging event triggered!' } )
+    else:
+        return Response( { 'Message':'Staging area not empty!' } )
