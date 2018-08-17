@@ -20,9 +20,15 @@ class UnlabeledComment(models.Model):
         else:
             return current_comment
 
+class StagingManager(models.Manager):
+    def random(self):
+        count = self.aggregate( count=Count('id'))['count']
+        random_index = randint(0, count-1)
+        return self.all()[random_index]
+
 class Staging(models.Model):
+    objects = StagingManager()
     comment_id = models.IntegerField( unique=True )
-    title = models.CharField( max_length=255 )
     text_raw = models.TextField()
     def __str__(self):
         current_comment = self.text_raw

@@ -109,6 +109,8 @@ def get_unlabeled_comment( request, format='json' ):
     comment = COMMENTS_DATAFRAME_TEXT_RAW[ COMMENTS_ITERATOR ]
     COMMENTS_ITERATOR += 1
     # 0: negative 1:neutral 2:positive
+    staging_object = models.Staging.objects.random()
+    comment = staging_object.text_raw
     comment_vector = word_vectors.comment_to_word2vec( comment, WORD2VEC_MODEL )
 
     with CLASSIFIER_NN_GRAPH.as_default():
@@ -150,10 +152,11 @@ def dataframe_unlabeled_comments_to_database(request, format='json'):
 
 @api_view(('POST',))
 def trigger_staging_event(request, format='json'):
+    global WORD2VEC_MODEL
     global CLASSIFIER_NN
     global CLASSIFIER_NN_GRAPH
     if staging_process.is_staging_area_empty():
-        staging_process.start( CLASSIFIER_NN, CLASSIFIER_NN_GRAPH )
+        staging_process.start( WORD2VEC_MODEL, CLASSIFIER_NN, CLASSIFIER_NN_GRAPH )
         return Response( { 'Message':'Staging event triggered!' } )
     else:
         return Response( { 'Message':'Staging area not empty!' } )
