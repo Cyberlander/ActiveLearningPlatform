@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <script src="{% static 'javascript/jquery.min.js' %}"></script>
   <script src="{% static 'javascript/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascript/get_unlabeled_comment.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascript/save_labeled_comment.js' %}"></script>
   <script type="text/javascript">
     var currentId = 0
     var myGlobalVar = 100
@@ -35,154 +37,7 @@
         showSaveLabel( false );
     });
   </script>
-  <script>
-    $(document).ready(
-      function(){
-        $("#good_button").click(
-          function(){
-            showSaveLabel( true );
-            currentLabelNumerical = 2;
-            document.getElementById('comment_panel').className = 'panel';
-            document.getElementById('comment_panel').classList.add('panel-success');
-          }
-        );
-    });
-    $(document).ready(
-      function(){
-        $("#neutral_button").click(
-          function(){
-            showSaveLabel( true );
-            currentLabelNumerical = 1;
-            document.getElementById('comment_panel').className = 'panel';
-            document.getElementById('comment_panel').classList.add('panel-warning');
-          }
-        );
-    });
-    $(document).ready(
-      function(){
-        $("#bad_button").click(
-          function(){
-            showSaveLabel( true );
-            currentLabelNumerical = 0;
-            document.getElementById('comment_panel').className = 'panel';
-            document.getElementById('comment_panel').classList.add('panel-danger');
-          }
-        );
-    });
-    $(document).ready(
-      function(){
-        $("#comment_button").click(
-          function(){
-            showSaveLabel( false );
-            document.getElementById('comment_panel').className = 'panel';
-            document.getElementById('comment_panel').classList.add('panel-primary');
-            $.ajax( { type:"GET",
-                      url:"http://localhost:8000/get_unlabeled_comment",
-                      //url:"{% static 'ajax_info.txt' %}",
-                      //dataType:"text",
-                      dataType:"json",
-                      error: function() {
-                        console.log("error");
-                      },
-                      beforeSend: function(){
-                        // Show image container
-                        $("#panel_content").html("Loading");
-                      },
-                      success: function(result){
-                      console.log(result)
-                      console.log( typeof result )
-                      console.log( result.Message )
-                      console.log( myGlobalVar )
-                      $("#panel_content").html(result.Message);
-                      currentId = result.Id
-                      currentComment = result.Message;
-                      currentLabelMachine = label_dict[result.Predicted]
-                      computer_says = "Computer says <strong>" + result.Predicted + "</strong>"
-                      $("#classification_guess").html( computer_says )
 
-                      var alert_class = "alert-info"
-                      //change the color of the alert
-                      if ( result.Predicted == "negative" ){
-                        alert_class = "alert-danger"
-                      }
-                      else if ( result.Predicted == "neutral" ){
-                        alert_class = "alert-warning"
-                      }
-                      else if ( result.Predicted == "positive" ){
-                        alert_class = "alert-success"
-                      }
-                      document.getElementById('classification_guess').className = 'alert';
-                      document.getElementById('classification_guess').classList.add( alert_class );
-                }
-              });
-          }
-        );
-
-
-
-
-
-        $("#label_button").click(
-          function(){
-
-
-            $.post("http://localhost:8000/send_comment_label",
-            {
-              id: currentId,
-              comment: currentComment,
-              label_user: currentLabelNumerical
-            },
-            function(data, status){
-              alert(label_user)
-            });
-
-
-
-            showSaveLabel( false );
-            document.getElementById('comment_panel').className = 'panel';
-            document.getElementById('comment_panel').classList.add('panel-primary');
-            $.ajax( { type:"GET",
-                      url:"http://localhost:8000/get_unlabeled_comment",
-                      //url:"{% static 'ajax_info.txt' %}",
-                      //dataType:"text",
-                      dataType:"json",
-                      error: function() {
-                        console.log("error");
-                      },
-                      beforeSend: function(){
-                        // Show image container
-                        $("#panel_content").html("Loading");
-                      },
-                      success: function(result){
-                        $("#panel_content").html(result.Message);
-                        currentId = result.Id
-                        currentComment = result.Message;
-                        currentLabelMachine = label_dict[result.Predicted];
-                        computer_says = "Computer says <strong>" + result.Predicted + "</strong>"
-                        $("#classification_guess").html( computer_says )
-
-                        var alert_class = "alert-info"
-                        //change the color of the alert
-                        if ( result.Predicted == "negative" ){
-                          alert_class = "alert-danger"
-                        }
-                        else if ( result.Predicted == "neutral" ){
-                          alert_class = "alert-warning"
-                        }
-                        else if ( result.Predicted == "positive" ){
-                          alert_class = "alert-success"
-                        }
-                        document.getElementById('classification_guess').className = 'alert';
-                        document.getElementById('classification_guess').classList.add( alert_class );
-                }
-              });
-          }
-        );
-
-
-    });
-
-  </script>
 
   <style>
     /* Remove the navbar's default margin-bottom and rounded borders */
@@ -271,6 +126,21 @@
         <div id="classification_guess" class="alert alert-info">
           <strong>Info!</strong> Here is place for the estimator prediction.
         </div>
+
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse1">Show estimator predictions</a>
+             </h4>
+           </div>
+           <div id="collapse1" class="panel-collapse collapse">
+             <div id="neural_network_prediction" class="panel-body">Neural Network</div>
+             <div class="panel-footer">Logistic Regression</div>
+           </div>
+         </div>
+      </div>
+
       <button type="button" id="comment_button" class="btn btn-primary btn-block">Get new comment</button>
       <button type="button" id="label_button" class="btn btn-primary btn-block">
         <span class="glyphicon glyphicon-envelope"></span> Save label
