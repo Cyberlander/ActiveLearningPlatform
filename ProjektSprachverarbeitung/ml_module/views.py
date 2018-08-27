@@ -9,6 +9,7 @@ import pandas as pd
 import os
 import tensorflow as tf
 from . import models
+from . import tasks
 # Create your views here.
 
 # loading_classifier
@@ -34,7 +35,13 @@ COMMENTS_DATAFRAME_TEXT_NORMALIZED = COMMENTS_DATAFRAME['text_normalized'].tolis
 COMMENTS_DATAFRAME_TEXT_SENTIMENT = COMMENTS_DATAFRAME['sentiment'].tolist()
 COMMENTS_DATAFRAME_TEXT_SENTIMENT_NUMERICAL = COMMENTS_DATAFRAME['sentiment_numerical'].tolist()
 COMMENTS_ITERATOR = 0
-print( COMMENTS_DATAFRAME.columns.values )
+
+# running tasks
+#tasks.start_staging_task( WORD2VEC_MODEL, CLASSIFIER_NN, CLASSIFIER_NN_GRAPH, schedule=10 )
+
+# registering periodic tasks
+#tasks.do_something(schedule=5)
+tasks.start_staging_task( repeat=3600  )
 
 SENTIMENT_DICT = {
     0:"negative",
