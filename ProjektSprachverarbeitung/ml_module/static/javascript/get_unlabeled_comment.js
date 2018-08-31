@@ -59,11 +59,15 @@ $(document).ready(
                     $("#panel_content").html(result.Message);
                     currentId = result.Id
                     currentComment = result.Message;
+                    predicteted_nn_negative = result.predicteted_nn_negative
+                    predicteted_nn_neutral = result.predicteted_nn_neutral
+                    predicteted_nn_positive = result.predicteted_nn_positive
+                    nn_says = "Negative: " + predicteted_nn_negative + " Neutral: " + predicteted_nn_neutral + " Positive: " + predicteted_nn_positive
                     currentLabelMachine = label_dict[result.Predicted]
                     computer_says = "Computer says <strong>" + result.Predicted + "</strong>"
                     $("#classification_guess").html( computer_says )
 
-                    $("#neural_network_prediction").html( result.Predicted )
+                    $("#neural_network_prediction").html( nn_says )
 
                     var alert_class = "alert-info"
                     //change the color of the alert

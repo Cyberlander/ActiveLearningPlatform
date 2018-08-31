@@ -71,39 +71,6 @@ def send_comment_label( request, format='json' ):
     #process_comments.process_labeled_comment( comment, label_user, label_machine )
     return Response( {'Message':'Thank you for sending a labeled comment!'} )
 
-@api_view(('GET',))
-def get_unlabeled_comment_very_old( request, format='json' ):
-    global COMMENTS_ITERATOR
-    global CLASSIFIER
-    global SENTIMENT_DICT
-    comment = COMMENTS_DATAFRAME_TEXT_RAW[ COMMENTS_ITERATOR ]
-    COMMENTS_ITERATOR += 1
-    # 0: negative 1:neutral 2:positive
-    predicted = CLASSIFIER.predict( [comment] )
-    predicted_text = SENTIMENT_DICT[predicted[0]]
-    print( predicted_text )
-    return Response( {  'headline':COMMENTS_DATAFRAME_TEXT_HEADLINE[ COMMENTS_ITERATOR ],
-                        'Message':comment,
-                        'text_normalized':COMMENTS_DATAFRAME_TEXT_NORMALIZED[ COMMENTS_ITERATOR ],
-                        'sentiment':COMMENTS_DATAFRAME_TEXT_SENTIMENT[ COMMENTS_ITERATOR ],
-                        'sentiment_numerical':COMMENTS_DATAFRAME_TEXT_SENTIMENT_NUMERICAL[ COMMENTS_ITERATOR ],
-                       'Predicted':predicted_text } )
-
-@api_view(('GET',))
-def get_unlabeled_comment_old( request, format='json' ):
-    global COMMENTS_ITERATOR
-    global CLASSIFIER
-    global SENTIMENT_DICT
-    id = COMMENTS_DATAFRAME_TEXT_ID[ COMMENTS_ITERATOR ]
-    comment = COMMENTS_DATAFRAME_TEXT_RAW[ COMMENTS_ITERATOR ]
-    COMMENTS_ITERATOR += 1
-    # 0: negative 1:neutral 2:positive
-    predicted = CLASSIFIER.predict( [comment] )
-    predicted_text = SENTIMENT_DICT[predicted[0]]
-    print( predicted_text )
-    return Response( {  'Id':id,
-                        'Message':comment,
-                        'Predicted':predicted_text } )
 
 @api_view(('GET',))
 def get_unlabeled_comment( request, format='json' ):
@@ -123,12 +90,21 @@ def get_unlabeled_comment( request, format='json' ):
     with CLASSIFIER_NN_GRAPH.as_default():
         predicted = CLASSIFIER_NN.predict( [comment_vector] )
 
+    predicteted_nn_negative = str(round( predicted[0][0], 3 ) )
+    predicteted_nn_neutral = str(round( predicted[0][1], 3 ))
+    predicteted_nn_positive = str(round( predicted[0][2], 3 ) ) 
+
+
+
     #predicted_text = SENTIMENT_DICT[predicted[0]]
     predicted_text = str( predicted )
     print( predicted_text )
     return Response( {  'Id':id,
                         'Message':comment,
-                        'Predicted':predicted_text } )
+                        'Predicted':predicted_text,
+                        'predicteted_nn_negative':predicteted_nn_negative,
+                        'predicteted_nn_neutral':predicteted_nn_neutral,
+                        'predicteted_nn_positive':predicteted_nn_positive } )
 
 def hello_world(request):
     return render( request, 'ml_module/hello2.html', {} )
