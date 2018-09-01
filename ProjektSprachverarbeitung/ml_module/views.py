@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from django.http import HttpResponse
 from . import settings
 from . import models
-from .submoduls import dynamic_ml_classifier, process_comments, word_vectors, staging_process
+from .submoduls import dynamic_ml_classifier, process_comments, word_vectors, staging_process, train_neural_network
 import pandas as pd
 import os
 import tensorflow as tf
@@ -22,8 +22,7 @@ CLASSIFIER_NN_GRAPH = tf.get_default_graph()
 
 WORD2VEC_MODEL = word_vectors.load_word2vec_model( settings.WORD2VEC_PATH, is_binary=True )
 
-print( "Read lage unlabeled comment dataframe..." )
-UNLABELED_COMMENTS_DATAFRAME = pd.read_csv( settings.UNLABELED_COMMENTS_CSV_PATH )
+
 
 COMMENTS_DATAFRAME = pd.read_csv( settings.COMMENTS_CSV_PATH )
 #USER_LABELED_COMMENTS_DATAFRAME = pd.read_csv( settings.USER_LABELED_CSV_PATH )
@@ -42,6 +41,8 @@ COMMENTS_ITERATOR = 0
 # registering periodic tasks
 #tasks.do_something(schedule=5)
 tasks.start_staging_task( repeat=3600  )
+tasks.train_neural_network_task( repeat=7200 )
+#tasks.train_neural_network( schedule=5 )
 
 SENTIMENT_DICT = {
     0:"negative",
@@ -92,7 +93,7 @@ def get_unlabeled_comment( request, format='json' ):
 
     predicteted_nn_negative = str(round( predicted[0][0], 3 ) )
     predicteted_nn_neutral = str(round( predicted[0][1], 3 ))
-    predicteted_nn_positive = str(round( predicted[0][2], 3 ) ) 
+    predicteted_nn_positive = str(round( predicted[0][2], 3 ) )
 
 
 
@@ -115,7 +116,8 @@ def add_comment_to_db(request, format='json'):
 
 @api_view(('POST',))
 def dataframe_unlabeled_comments_to_database(request, format='json'):
-    global UNLABELED_COMMENTS_DATAFRAME
+    print( "Read lage unlabeled comment dataframe..." )
+    UNLABELED_COMMENTS_DATAFRAME = pd.read_csv( settings.UNLABELED_COMMENTS_CSV_PATH )
     id = UNLABELED_COMMENTS_DATAFRAME['id'].tolist()
     headline = UNLABELED_COMMENTS_DATAFRAME['headline'].tolist()
     text_raw = UNLABELED_COMMENTS_DATAFRAME['text_raw'].tolist()
@@ -143,3 +145,7 @@ def trigger_staging_event(request, format='json'):
         return Response( { 'Message':'Staging event triggered!' } )
     else:
         return Response( { 'Message':'Staging area not empty!' } )
+
+@api_view(('POST',))
+def get_labeled_comments_table_as_csv(request, format='json'):
+    return Response( {'Message':'Laeuft!   '})

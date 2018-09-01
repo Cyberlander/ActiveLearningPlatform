@@ -9,6 +9,7 @@ COMMENTS_CSV_PATH = os.path.join( RESOURCES_BASE_PATH, 'million_post_corpus_sent
 USER_LABELED_CSV_PATH = os.path.join( RESOURCES_BASE_PATH, 'user_labeled_comments.csv' )
 
 WORD2VEC_PATH = os.path.join( RESOURCES_BASE_PATH, 'word2vec/german.model' )
+NN_BASE_WEIGHTS = os.path.join( RESOURCES_BASE_PATH, 'nn_clf/saved_weights.hdf5')
 
 CLF_DICT = {
     "logistic_regression":{ "lib":"sklearn",

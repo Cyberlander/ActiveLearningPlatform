@@ -1,7 +1,7 @@
 from background_task import background
 import tensorflow as tf
 from . import settings
-from .submoduls import dynamic_ml_classifier, word_vectors, staging_process
+from .submoduls import dynamic_ml_classifier, word_vectors, staging_process, train_neural_network
 
 @background(schedule=10)
 def do_something():
@@ -18,3 +18,9 @@ def start_staging_task():
         staging_process.start( word2vec_model, classifier_nn, classifier_nn_graph )
     else:
         print( "The staging area is not empty. Task canceled." )
+
+#@background(schedule=10)
+@background(schedule=10)
+def train_neural_network_task():
+    print("Executing task for neural network training...")
+    train_neural_network.start_training()
