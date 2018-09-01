@@ -18,6 +18,12 @@ def comment_to_word2vec( comment, word2vec_model ):
         data_matrix[0][i] = word_vector
     return data_matrix
 
+def comments_to_word_to_vec( comments, word2vec_model,seq_len, vec_dim ):
+    word_2_vec_comments = np.zeros( ( len(comments), seq_len, vec_dim ) )
+    for i, comment in enumerate( comments ):
+        word_2_vec_comments[i] = comment_to_word2vec( comment,word2vec_model )
+    return word_2_vec_comments
+
 def load_word2vec_model( path, is_binary=False ):
     print( "Loading word2vec model..." )
     if is_binary == False:
