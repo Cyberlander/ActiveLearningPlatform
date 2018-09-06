@@ -1,18 +1,20 @@
 from django.db import models
 from django.db.models.aggregates import Count
 from random import randint
+from django.db.models import Q
 
 class UnlabeledCommentManager(models.Manager):
     def random(self):
-        count = self.aggregate( count=Count('id'))['count']
+        count = self.aggregate( count=Count('id', filter=Q(unlabeledcomment=False)))['count']
         random_index = randint(0, count-1)
-        return self.all()[random_index]
+        return self.filter(is_labeled=False)[random_index]
 
 class UnlabeledComment(models.Model):
     objects = UnlabeledCommentManager()
     comment_id = models.IntegerField( unique=True )
     title = models.CharField(max_length=255)
     text_raw = models.TextField()
+    is_labeled = models.BooleanField(default=False)
     def __str__(self):
         current_comment = self.text_raw
         if len(current_comment)>20:
@@ -22,14 +24,15 @@ class UnlabeledComment(models.Model):
 
 class StagingManager(models.Manager):
     def random(self):
-        count = self.aggregate( count=Count('id'))['count']
+        count = self.aggregate( count=Count('id', filter=Q(staging__is_labeled=False)))['count']
         random_index = randint(0, count-1)
-        return self.all()[random_index]
+        return self.filter(is_labeled=False)[random_index]
 
 class Staging(models.Model):
     objects = StagingManager()
     comment_id = models.IntegerField( unique=True )
     text_raw = models.TextField()
+    is_labeled = models.BooleanField(default=False)
     def __str__(self):
         current_comment = self.text_raw
         if len(current_comment)>20:
