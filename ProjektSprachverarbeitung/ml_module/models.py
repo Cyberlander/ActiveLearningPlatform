@@ -5,7 +5,7 @@ from django.db.models import Q
 
 class UnlabeledCommentManager(models.Manager):
     def random(self):
-        count = self.aggregate( count=Count('id', filter=Q(unlabeledcomment=False)))['count']
+        count = self.aggregate( count=Count('id', filter=Q(unlabeledcomment__is_labeled=False)))['count']
         random_index = randint(0, count-1)
         return self.filter(is_labeled=False)[random_index]
 

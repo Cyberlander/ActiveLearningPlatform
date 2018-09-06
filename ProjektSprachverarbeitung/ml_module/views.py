@@ -160,3 +160,10 @@ def get_labeled_comments_table_as_json(request, format='json'):
                         "label_user_alphanumerical" : SENTIMENT_DICT[int( c.label_user )] }
         answer["comments"].append( json_object )
     return Response( answer )
+
+@api_view(('GET',))
+def get_database_statistics(request, format='json'):
+    count_unlabeled_comments = models.UnlabeledComment.objects.filter( is_labeled=False ).count()
+    print("!")
+    print( count_unlabeled_comments )
+    return Response( { "count_unlabeled_comments" : count_unlabeled_comments} )
