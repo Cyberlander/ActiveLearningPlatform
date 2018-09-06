@@ -147,5 +147,16 @@ def trigger_staging_event(request, format='json'):
         return Response( { 'Message':'Staging area not empty!' } )
 
 @api_view(('POST',))
-def get_labeled_comments_table_as_csv(request, format='json'):
-    return Response( {'Message':'Laeuft!   '})
+def get_labeled_comments_table_as_json(request, format='json'):
+    answer = { "comments" : [] }
+    all_labeled_comments = list( models.UserLabeledComment.objects.all() )
+    comment_ids = []
+    comments = []
+    comment_labels = []
+    for c in all_labeled_comments:
+        json_object = { "comment_id" : c.comment_id,
+                        "comment" : c.comment,
+                        "label_user" : c.label_user,
+                        "label_user_alphanumerical" : SENTIMENT_DICT[int( c.label_user )] }
+        answer["comments"].append( json_object )
+    return Response( answer )

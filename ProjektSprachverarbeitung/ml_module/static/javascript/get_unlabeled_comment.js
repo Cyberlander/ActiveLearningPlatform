@@ -64,8 +64,8 @@ $(document).ready(
                     predicteted_nn_positive = result.predicteted_nn_positive
                     nn_says = "Negative: " + predicteted_nn_negative + " Neutral: " + predicteted_nn_neutral + " Positive: " + predicteted_nn_positive
                     currentLabelMachine = label_dict[result.Predicted]
-                    computer_says = "Computer says <strong>" + result.Predicted + "</strong>"
-                    $("#classification_guess").html( computer_says )
+                    //computer_says = "Computer says <strong>" + result.Predicted + "</strong>"
+                    //$("#classification_guess").html( computer_says )
 
                     $("#neural_network_prediction").html( nn_says )
 
