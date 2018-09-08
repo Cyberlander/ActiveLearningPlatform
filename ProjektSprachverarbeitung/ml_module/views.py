@@ -164,6 +164,9 @@ def get_labeled_comments_table_as_json(request, format='json'):
 @api_view(('GET',))
 def get_database_statistics(request, format='json'):
     count_unlabeled_comments = models.UnlabeledComment.objects.filter( is_labeled=False ).count()
-    print("!")
+    count_labeled_comments = models.UserLabeledComment.objects.count()
+    count_staging_area = models.Staging.objects.count()
     print( count_unlabeled_comments )
-    return Response( { "count_unlabeled_comments" : count_unlabeled_comments} )
+    return Response( { "count_unlabeled_comments" : count_unlabeled_comments,
+                        "count_labeled_comments" : count_labeled_comments,
+                        'count_staging_area' : count_staging_area } )

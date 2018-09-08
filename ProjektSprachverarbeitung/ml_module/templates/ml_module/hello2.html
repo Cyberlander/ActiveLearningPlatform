@@ -101,9 +101,9 @@
   <p></p>
   <div class="row content">
     <div class="col-sm-2 sidenav">
-      <p><a id="database_statistics_link" data-toggle="modal" data-target="#exampleModal">Database statistics</a></p>
-      <p><a href="#">Link</a></p>
-      <p><a href="#">Link</a></p>
+      <p><a id="database_statistics_link" data-toggle="modal" data-target="#DatabaseStatisticsModal">Database statistics</a></p>
+      <p><a  data-toggle="modal" data-target="#FillStagingModal">Fill Staging Area</a></p>
+      <p><a href="#">Export labeled comments</a></p>
     </div>
     <div class="col-sm-8 text-left">
       <div class="panel-group">
@@ -158,22 +158,43 @@
   <p>Footer Text</p>
 </footer>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Database Statistics Modal -->
+<div class="modal fade" id="DatabaseStatisticsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Database statistics</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <div id="count_unlabeled_comments">Unlabeled comments: </div>
+        <div id="count_labeled_comments">Labeled commments: </div>
+        <div id="count_staging_comments">Comments in staging:</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fill Staging Modal -->
+<div class="modal fade" id="FillStagingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Fill Staging Area</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="count_unlabeled_comments">...</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

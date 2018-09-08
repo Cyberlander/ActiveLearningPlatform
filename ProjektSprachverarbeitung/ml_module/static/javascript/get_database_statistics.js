@@ -15,7 +15,9 @@ $(document).ready(
                       $("#panel_content").html("Loading");
                     },
                     success: function(result){
-                    alert(result.count_unlabeled_comments)
+                      $("#count_unlabeled_comments").html( " Unlabeled comments: " + result.count_unlabeled_comments )
+                      $("#count_labeled_comments").html( "Labeled commments: " + result.count_labeled_comments )
+                     $("#count_staging_comments").html( "Comments in staging: " + result.count_staging_area )
 
 
               }
