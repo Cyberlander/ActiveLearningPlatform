@@ -10,9 +10,7 @@ $(document).ready(
                     error: function() {
                       console.log("error");
                     },
-                    beforeSend: function(){
-                      // Show image container
-                      $("#panel_content").html("Loading");
+                    beforeSend: function(){                      
                     },
                     success: function(result){
                       $("#count_unlabeled_comments").html( " Unlabeled comments: " + result.count_unlabeled_comments )

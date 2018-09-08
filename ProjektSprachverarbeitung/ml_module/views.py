@@ -22,19 +22,6 @@ CLASSIFIER_NN_GRAPH = tf.get_default_graph()
 
 WORD2VEC_MODEL = word_vectors.load_word2vec_model( settings.WORD2VEC_PATH, is_binary=True )
 
-
-
-COMMENTS_DATAFRAME = pd.read_csv( settings.COMMENTS_CSV_PATH )
-#USER_LABELED_COMMENTS_DATAFRAME = pd.read_csv( settings.USER_LABELED_CSV_PATH )
-
-COMMENTS_DATAFRAME_TEXT_ID = COMMENTS_DATAFRAME['id'].tolist()
-COMMENTS_DATAFRAME_TEXT_HEADLINE = COMMENTS_DATAFRAME['headline'].tolist()
-COMMENTS_DATAFRAME_TEXT_RAW = COMMENTS_DATAFRAME['text_raw'].tolist()
-COMMENTS_DATAFRAME_TEXT_NORMALIZED = COMMENTS_DATAFRAME['text_normalized'].tolist()
-COMMENTS_DATAFRAME_TEXT_SENTIMENT = COMMENTS_DATAFRAME['sentiment'].tolist()
-COMMENTS_DATAFRAME_TEXT_SENTIMENT_NUMERICAL = COMMENTS_DATAFRAME['sentiment_numerical'].tolist()
-COMMENTS_ITERATOR = 0
-
 # running tasks
 #tasks.start_staging_task( WORD2VEC_MODEL, CLASSIFIER_NN, CLASSIFIER_NN_GRAPH, schedule=10 )
 
@@ -65,9 +52,12 @@ def send_comment_label( request, format='json' ):
                                                 comment = comment,
                                                 label_user = label_user )
     database_entry.save()
-
-    # delete entry from unlabeled comments table
-    models.UserLabeledComment
+    print( models.Staging.objects.filter( comment_id=id ))
+    delete_result = models.Staging.objects.filter( comment_id=id  ).delete()
+    # update unlabeled comment
+    comment_from_unlabeled = models.UserLabeledComment.objects.get( comment_id=id )
+    comment_from_unlabeled.is_labeled = True
+    comment_from_unlabeled.save()
 
     #process_comments.process_labeled_comment( comment, label_user, label_machine )
     return Response( {'Message':'Thank you for sending a labeled comment!'} )
@@ -75,16 +65,13 @@ def send_comment_label( request, format='json' ):
 
 @api_view(('GET',))
 def get_unlabeled_comment( request, format='json' ):
-    global COMMENTS_ITERATOR
     global CLASSIFIER
     global SENTIMENT_DICT
     global WORD2VEC_MODEL
     global CLASSIFIER_NN_GRAPH
-    id = COMMENTS_DATAFRAME_TEXT_ID[ COMMENTS_ITERATOR ]
-    comment = COMMENTS_DATAFRAME_TEXT_RAW[ COMMENTS_ITERATOR ]
-    COMMENTS_ITERATOR += 1
     # 0: negative 1:neutral 2:positive
     staging_object = models.Staging.objects.random()
+    id = staging_object.comment_id
     comment = staging_object.text_raw
     comment_vector = word_vectors.comment_to_word2vec( comment, WORD2VEC_MODEL )
 
@@ -164,9 +151,11 @@ def get_labeled_comments_table_as_json(request, format='json'):
 @api_view(('GET',))
 def get_database_statistics(request, format='json'):
     count_unlabeled_comments = models.UnlabeledComment.objects.filter( is_labeled=False ).count()
+    l = models.UnlabeledComment.objects.filter( is_labeled=True ).count()
+    print("L:", l)
     count_labeled_comments = models.UserLabeledComment.objects.count()
     count_staging_area = models.Staging.objects.count()
-    print( count_unlabeled_comments )
+
     return Response( { "count_unlabeled_comments" : count_unlabeled_comments,
                         "count_labeled_comments" : count_labeled_comments,
                         'count_staging_area' : count_staging_area } )
