@@ -13,7 +13,6 @@ from . import tasks
 # Create your views here.
 
 # loading_classifier
-
 CLF_TYPE = settings.ML_CLASSIFIER
 CLASSIFIER = dynamic_ml_classifier.get_classifier( settings.ML_CLASSIFIER, **settings.CLF_DICT[settings.ML_CLASSIFIER] )
 
@@ -133,6 +132,7 @@ def trigger_staging_event(request, format='json'):
     else:
         return Response( { 'Message':'Staging area not empty!' } )
 
+
 @api_view(('POST',))
 def get_labeled_comments_table_as_json(request, format='json'):
     answer = { "comments" : [] }
@@ -159,3 +159,17 @@ def get_database_statistics(request, format='json'):
     return Response( { "count_unlabeled_comments" : count_unlabeled_comments,
                         "count_labeled_comments" : count_labeled_comments,
                         'count_staging_area' : count_staging_area } )
+
+
+@api_view(('GET',))
+def new_endpoint(request, format='json'):
+    global WORD2VEC_MODEL
+    global CLASSIFIER_NN
+    global CLASSIFIER_NN_GRAPH
+    staging_process.start( WORD2VEC_MODEL, CLASSIFIER_NN, CLASSIFIER_NN_GRAPH )
+    return Response( { 'Message':'Staging area not empty!' } )
+
+@api_view(('GET',))
+def train_neural_network(request, format='json'):
+    tasks.train_neural_network_task( schedule=5 )
+    return Response( { 'Message':'Staging area not empty!' } )
