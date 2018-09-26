@@ -19,23 +19,21 @@ them there is the so called Staging table. This table contains comments about wh
 the machine learning algorithm is unsure about. The frontend gets its data from
 this staging table.
 
-## How to start the platform without docker?
-### Windows
+## Run the application
 * make sure git is installed on your system
 * make sure python 3.5 is installed on your system
+* make sure docker is installed on your system
 * clone the repository
   * ```git clone https://github.com/Cyberlander/ActiveLearningPlatform```
-* download the german word embeddings word to vec from [this site](http://cloud.devmount.de/d2bc5672c523b086/german.model)
-* place the file german.model in this location: ProjektSprachverarbeitung/resources/word2vec
-* change into the ProjektSprachverarbeitung root directory and install the python requirements
-  * ```pip install -r requirements.txt```
-* start the queue for the background tasks:
-  * ```python manage.py process_tasks```
-* start the platform:
-  * ```python manage.py runserver```
+* change to the repository containing the dockerfile
+  * ```cd ActiveLearningPlatform/ProjektSprachverarbeitung```
+* build the dockerfile
+  * ```docker build -t felixf/active-learning-platform .```
+  * run the dockerfile
+    * ```docker run -it -p 8000:8000 felixf/active-learning-platform .```
 
 ## User Manual
-Open an web browser and type ```localhost:8000``` into the browser address bar
+Open an web browser and type ```0.0.0.0:8000``` into the browser address bar
 Now you should see the following web page:
 ### Get a comment
 When you open the page for the first time there isn't any comment loaded yet.
