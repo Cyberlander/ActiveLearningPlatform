@@ -40,7 +40,7 @@ $(document).ready(
           document.getElementById('comment_panel').className = 'panel';
           document.getElementById('comment_panel').classList.add('panel-primary');
           $.ajax( { type:"GET",
-                    url:"http://localhost:8000/get_unlabeled_comment",
+                    url:"http://0.0.0.0:8000/get_unlabeled_comment",
                     //url:"{% static 'ajax_info.txt' %}",
                     //dataType:"text",
                     dataType:"json",

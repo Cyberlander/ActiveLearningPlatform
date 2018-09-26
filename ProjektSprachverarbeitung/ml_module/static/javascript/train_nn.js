@@ -3,7 +3,7 @@ $(document).ready(
       $("#nn_training_button").click(
         function(){
           $.ajax( { type:"GET",
-                    url:"http://localhost:8000/train_neural_network",
+                    url:"http://0.0.0.0:8000/train_neural_network",
                     //url:"{% static 'ajax_info.txt' %}",
                     //dataType:"text",
                     dataType:"json",

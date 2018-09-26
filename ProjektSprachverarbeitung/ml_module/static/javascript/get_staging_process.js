@@ -3,7 +3,7 @@ $(document).ready(
       $("#staging_process_button").click(
         function(){
           $.ajax( { type:"GET",
-                    url:"http://localhost:8000/new_endpoint",
+                    url:"http://0.0.0.0:8000/new_endpoint",
                     //url:"{% static 'ajax_info.txt' %}",
                     //dataType:"text",
                     dataType:"json",

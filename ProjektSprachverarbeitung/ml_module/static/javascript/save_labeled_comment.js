@@ -4,7 +4,7 @@ $("#label_button").click(
         function(){
 
 
-          $.post("http://localhost:8000/send_comment_label",
+          $.post("http://0.0.0.0:8000/send_comment_label",
           {
             id: currentId,
             comment: currentComment,
