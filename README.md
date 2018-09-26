@@ -28,9 +28,9 @@ this staging table.
 * change to the repository containing the dockerfile
   * ```cd ActiveLearningPlatform/ProjektSprachverarbeitung```
 * build the dockerfile
-  * ```docker build -t felixf/active-learning-platform .```
+  * ```sudo docker build -t felixf/active-learning-platform .```
 * run the dockerfile
-  * ```docker run -it -p 8000:8000 felixf/active-learning-platform```
+  * ```sudo docker run -it -p 8000:8000 felixf/active-learning-platform```
 
 ## User Manual
 Open an web browser and type ```0.0.0.0:8000``` into the browser address bar
