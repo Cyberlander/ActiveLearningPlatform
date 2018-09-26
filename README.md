@@ -20,7 +20,7 @@ the machine learning algorithm is unsure about. The frontend gets its data from
 this staging table.
 
 ## Next steps
-* [run the application](https://github.com/Cyberlander/ActiveLearningPlatform/docs/run_the_application.md)
+* [run the application](https://github.com/Cyberlander/ActiveLearningPlatform/blob/master/docs/run_the_application.md)
 
 ## User Manual
 Open an web browser and type ```0.0.0.0:8000``` into the browser address bar
