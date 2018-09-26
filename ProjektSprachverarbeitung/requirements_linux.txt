@@ -39,7 +39,6 @@ itsdangerous==0.24
 Jinja2==2.9.6
 joblib==0.11
 jsonschema==2.6.0
-jupyter-core==4.4.0
 Keras==2.1.6
 kombu==4.2.1
 llvmlite==0.20.0
@@ -62,11 +61,9 @@ pathlib==1.0.1
 pdf2image==0.1.14
 Pillow==4.2.1
 plac==0.9.6
-plotly==2.5.0
 preshed==1.0.0
 protobuf==3.5.2.post1
 pydub==0.20.0
-pyenchant==1.6.6
 pyparsing==2.1.10
 pyreadline==2.1
 python-dateutil==2.6.1
@@ -81,8 +78,6 @@ rq==0.8.2
 scikit-image==0.13.1
 scikit-learn==0.18.2
 scipy==0.19.1
-seaborn==0.8.1
-sip==4.18.1
 six==1.10.0
 sklearn==0.0
 smart-open==1.5.3
@@ -91,7 +86,6 @@ tensorflow==1.8.0
 tensorflow-hub==0.1.0
 tensorflow-tensorboard==0.4.0rc3
 termcolor==1.1.0
-Theano==0.9.0
 thinc==6.10.1
 toolz==0.8.2
 tqdm==4.19.8
