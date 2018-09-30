@@ -1,5 +1,7 @@
-## Run the application
+## Docker-based installation
 * make sure git is installed on your system
+  * ```sudo apt-get update```
+  * ```sudo apt-get install git-core```
 * make sure python 3.5 is installed on your system
 * make sure docker is installed on your system
 * clone the repository
