@@ -37,3 +37,9 @@ in the staging area.
 ### Train neural network
 This will give a background task to the scheduler which will train the network
 on the new labeled comments.
+
+### Download the labeled comments as json
+Type ```0.0.0.0:8000/get_labeled_comments_table_as_json``` into the browser address bar
+
+### Download the neural network as json
+Type ```0.0.0.0:8000/get_neural_network_table_as_json``` into the browser address bar
