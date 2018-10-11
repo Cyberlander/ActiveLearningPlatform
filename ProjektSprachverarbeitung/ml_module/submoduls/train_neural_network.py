@@ -55,5 +55,12 @@ def start_training():
     sentences, labels = load_sentences_and_labels()
     x_sentences_word2vec = word_vectors.comments_to_word_to_vec( sentences, WORD2VEC_MODEL, SEQUENCE_LENGTH, EMBEDDING_DIM  )
     y = np_utils.to_categorical( labels )
+    y_extended = np.zeros((y.shape[0],3))
+    if y.shape[0] == 1:
+        y_extended[:,0] = y
+    elif y.shape[0] == 2:
+        y_extended[:,:2] = y
+    else:
+        y_extended = y
     nn_model.fit( x_sentences_word2vec, y, epochs=EPOCHS, batch_size=2 )
     print("Done!")
