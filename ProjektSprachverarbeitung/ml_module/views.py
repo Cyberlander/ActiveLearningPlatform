@@ -26,8 +26,8 @@ WORD2VEC_MODEL = word_vectors.load_word2vec_model( settings.WORD2VEC_PATH, is_bi
 
 # registering periodic tasks
 #tasks.do_something(schedule=5)
-tasks.start_staging_task( repeat=3600  )
-tasks.train_neural_network_task( repeat=7200 )
+#tasks.start_staging_task( repeat=3600  )
+#tasks.train_neural_network_task( repeat=7200 )
 #tasks.train_neural_network( schedule=5 )
 
 SENTIMENT_DICT = {
@@ -133,7 +133,7 @@ def trigger_staging_event(request, format='json'):
         return Response( { 'Message':'Staging area not empty!' } )
 
 
-@api_view(('POST',))
+@api_view(('GET',))
 def get_labeled_comments_table_as_json(request, format='json'):
     answer = { "comments" : [] }
     all_labeled_comments = list( models.UserLabeledComment.objects.all() )
@@ -147,6 +147,22 @@ def get_labeled_comments_table_as_json(request, format='json'):
                         "label_user_alphanumerical" : SENTIMENT_DICT[int( c.label_user )] }
         answer["comments"].append( json_object )
     return Response( answer )
+
+@api_view(('GET',))
+def get_neural_network_table_as_json(request, format='json'):
+    file_path = settings.CLF_DICT[ "neural_network"]["path"]
+    FilePointer = open(file_path,"r")
+    response = HttpResponse(FilePointer,content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename=nn_model_word2vec.json'
+    return response
+
+@api_view(('GET',))
+def get_neural_network_weights_as_hdf5(request, format='json'):
+    file_path = settings.CLF_DICT[ "neural_network"]["path_weights"]
+    FilePointer = open(file_path,"r")
+    response = HttpResponse(FilePointer,content_type='application/hdf5')
+    response['Content-Disposition'] = 'attachment; filename=saved_weights.hdf5'
+    return response
 
 @api_view(('GET',))
 def get_database_statistics(request, format='json'):
@@ -171,5 +187,5 @@ def new_endpoint(request, format='json'):
 
 @api_view(('GET',))
 def train_neural_network(request, format='json'):
-    tasks.train_neural_network_task( schedule=5 )
+    tasks.train_neural_network_task( schedule=0 )
     return Response( { 'Message':'Staging area not empty!' } )
