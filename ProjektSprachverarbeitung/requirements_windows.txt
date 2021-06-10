@@ -17,7 +17,7 @@ Cython==0.26
 cytoolz==0.8.2
 decorator==4.1.2
 dill==0.2.7.1
-Django==1.9.12
+Django==2.2.24
 django-background-tasks==1.1.13
 django-compat==1.0.15
 django-dajax==0.9.2
