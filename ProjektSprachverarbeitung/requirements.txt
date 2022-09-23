@@ -63,7 +63,7 @@ pdf2image==0.1.14
 Pillow==4.2.1
 plac==0.9.6
 preshed==1.0.0
-protobuf==3.5.2.post1
+protobuf==3.18.3
 pydub==0.20.0
 pyparsing==2.1.10
 pyreadline==2.1
